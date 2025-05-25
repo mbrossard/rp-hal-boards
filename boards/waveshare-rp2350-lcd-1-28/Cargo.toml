@@ -1,0 +1,39 @@
+[package]
+name = "waveshare-rp2350-lcd-1-28"
+version = "0.8.0"
+authors = ["The rp-rs Developers"]
+edition = "2021"
+homepage = "https://github.com/rp-rs/rp-hal-boards/tree/main/boards/waveshare-rp2350-lcd-1-28"
+description = "Board Support Package for the Waveshare RP2350 LCD 1.28 inch"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/rp-rs/rp-hal-boards.git"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cortex-m-rt = { workspace = true, optional = true }
+rp235x-hal.workspace = true
+
+[dev-dependencies]
+cortex-m.workspace = true
+embedded-graphics.workspace = true
+embedded-hal.workspace = true
+fugit.workspace = true
+gc9a01a_driver = { workspace = true }
+nb.workspace = true
+panic-halt.workspace = true
+rp235x-hal = { workspace = true, features = ["binary-info"] }
+rp-binary-info.workspace = true
+
+[features]
+# This is the set of features we enable by default
+default = ["rt", "critical-section-impl", "rom-func-cache"]
+
+# critical section that is safe for multicore use
+critical-section-impl = ["rp235x-hal/critical-section-impl"]
+
+# Minimal startup / runtime for Cortex-M microcontrollers
+rt = ["cortex-m-rt", "rp235x-hal/rt"]
+
+# Memoize(cache) ROM function pointers on first use to improve performance
+rom-func-cache = ["rp235x-hal/rom-func-cache"]

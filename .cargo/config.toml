@@ -22,7 +22,7 @@ target = "thumbv6m-none-eabi"
 # * linker argument -Tlink.x tells the linker to use link.x as the linker
 #   script. This is usually provided by the cortex-m-rt crate, and by default
 #   the version in that crate will include a file called `memory.x` which
-#   describes the particular memory layout for your specific chip. 
+#   describes the particular memory layout for your specific chip.
 # * no-vectorize-loops turns off the loop vectorizer (seeing as the M0+ doesn't
 #   have SIMD)
 rustflags = [
@@ -38,3 +38,29 @@ runner = "elf2uf2-rs -d"
 # This runner will find a supported SWD debug probe and flash your RP2040 over
 # SWD:
 # runner = "probe-rs run --chip RP2040"
+
+
+
+# This is the hard-float ABI for Arm mode for RP2350
+#
+# The FPU is enabled by default, and float function arguments use FPU
+# registers.
+[target.thumbv8m.main-none-eabihf]
+# Pass some extra options to rustc, some of which get passed on to the linker.
+#
+# * linker argument --nmagic turns off page alignment of sections (which saves
+#   flash space)
+# * linker argument -Tlink.x tells the linker to use link.x as a linker script.
+#   This is usually provided by the cortex-m-rt crate, and by default the
+#   version in that crate will include a file called `memory.x` which describes
+#   the particular memory layout for your specific chip.
+rustflags = [
+    "-C", "link-arg=--nmagic",
+    "-C", "link-arg=-Tlink.x",
+    "-C", "target-cpu=cortex-m33",
+]
+
+# Use picotool for loading.
+#
+# Load an elf, skipping unchanged flash sectors, verify it, and execute it
+runner = "picotool load -u -v -x -t elf"
